@@ -14,7 +14,7 @@ export default new Vuex.Store({
     dollarrupiah: [],
     transfer: [],
     paid: false,
-    purchase: 0,
+    purchase: [],
     paymentId: [],
   },
   mutations: {
@@ -127,7 +127,6 @@ export default new Vuex.Store({
     },
     async DELETECART(context, payload) {
       try {
-        console.log(payload, "INI PAYLOAD");
         await axios({
           method: "delete",
           url: "/deletecart",
@@ -237,7 +236,7 @@ export default new Vuex.Store({
 
     async ADDSEAT(context, payload) {
       try {
-        console.log(payload, "DARI CART");
+        console.log(payload, "DARI CART SUDAH AMSUK");
         let response = await axios({
           method: "patch",
           url: `/detail/addseat`,

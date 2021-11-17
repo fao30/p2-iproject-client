@@ -62,6 +62,7 @@
           </div>
         </fieldset>
         <br /><br />
+        <p>Please make a purchase within {{ countDown }} seconds</p>
         <div v-if="this.notPaid">
           <h5 v-if="this.paidStatus == null">
             Please complete your payment first
@@ -80,7 +81,6 @@
     </center>
   </div>
 </template>
-
 <script>
 export default {
   name: "payment",
@@ -93,6 +93,7 @@ export default {
       vaUntil: "",
       vaStatus: "",
       notPaid: false,
+      countDown: 60,
     };
   },
   created() {
@@ -101,8 +102,8 @@ export default {
     };
     this.$store.dispatch("TRANSFERDETAIL", obj1);
     this.$store.dispatch("PAYMENTIDACTION");
-    this.getPaymentId();
     this.fetchLocal();
+    this.countDownTimer();
   },
   computed: {
     transferInfo() {
@@ -114,8 +115,42 @@ export default {
     getPaymentID() {
       return this.$store.state.paymentId;
     },
+    getPurchase() {
+      return this.$store.state.purchase;
+    },
   },
   methods: {
+    async countDownTimer() {
+      if (this.countDown > 0) {
+        setTimeout(() => {
+          this.countDown -= 1;
+          this.countDownTimer();
+        }, 1000);
+      }
+      if (this.countDown == 0) {
+        let obj = {
+          external_id: this.transferInfo.external_id,
+          amount: this.transferInfo.expected_amount,
+        };
+        await this.$store.dispatch("PAIDACTION", obj);
+        if (this.paidStatus !== null) {
+          this.$router.push("/");
+        } else {
+          console.log("MASUK SIN CUKKK");
+          console.log(this.getPurchase, "INI ISI PURCHASE");
+          let obj = {
+            id: this.getPurchase.TourPackageId,
+            seatBook: this.getPurchase.pax,
+          };
+          await this.$store.dispatch(
+            "DELETECART",
+            this.getPurchase.TourPackageId
+          );
+          await this.$store.dispatch("ADDSEAT", obj);
+          this.$router.push("/");
+        }
+      }
+    },
     fetchLocal() {
       this.vaId = this.transferInfo.id;
       this.vaNumber = this.transferInfo.account_number;
@@ -124,14 +159,13 @@ export default {
       this.vaUntil = this.transferInfo.expiration_date;
       this.vaStatus = this.transferInfo.status;
     },
-    getPaymentId() {
-      console.log(this.getPaymentID, "INI ISI DARI METOH GET PAYMENT BY ID");
-    },
     async paid(payload, amount) {
+      // console.log("CLICKED PAID");
       let obj = {
         external_id: payload,
         amount,
       };
+      // console.log(this.paidStatus);
       await this.$store.dispatch("PAIDACTION", obj);
       if (this.paidStatus !== null) {
         console.log(this.paidStatus, "DI KLIKKKKKKK");

@@ -69,7 +69,16 @@
         </a>
       </li>
       <li>
-        <h1>COVID DATA</h1>
+        <h1>
+          COVID DATA
+          <img
+            width="50"
+            height="50"
+            src="../assets/img/coronavirus.webp"
+            alt=""
+          />
+        </h1>
+
         <div class="containerDetail1">
           <div
             style="
