@@ -68,6 +68,92 @@
           </div>
         </a>
       </li>
+      <li>
+        <h1>COVID DATA</h1>
+        <div class="containerDetail1">
+          <div
+            style="
+              color: white;
+              background-color: red;
+              border-radius: 70%;
+              width: 120px;
+              height: 30px;
+            "
+          >
+            Death Case
+          </div>
+          <p v-if="detail.covidData">
+            {{ formatNumber(detail.covidData.deaths) }}
+          </p>
+          <p v-if="!detail.covidData">No data found</p>
+        </div>
+        <div class="containerDetail1">
+          <div
+            style="
+              color: black;
+              background-color: yellow;
+              border-radius: 70%;
+              width: 120px;
+              height: 30px;
+            "
+          >
+            Confirmed
+          </div>
+          <p v-if="detail.covidData">
+            {{ formatNumber(detail.covidData.confirmed) }}
+          </p>
+          <p v-if="!detail.covidData">No data found</p>
+        </div>
+        <div class="containerDetail1">
+          <div
+            style="
+              color: white;
+              background-color: green;
+              border-radius: 70%;
+              width: 120px;
+              height: 30px;
+            "
+          >
+            Recovery
+          </div>
+          <p v-if="detail.covidData">
+            {{ formatNumber(detail.covidData.recovered) }}
+          </p>
+          <p v-if="!detail.covidData">No data found</p>
+        </div>
+        <div v-if="detail.covidData">
+          <div
+            v-if="
+              detail.covidData.confirmed > 0 &&
+              detail.covidData.confirmed < 2000000
+            "
+            class="alert alert-success"
+            role="alert"
+          >
+            Travel warning: {{ detail.destinationName }} is on the safe travel
+            zone
+          </div>
+          <div
+            v-if="
+              detail.covidData.confirmed >= 2000000 &&
+              detail.covidData.confirmed <= 7000000
+            "
+            class="alert alert-warning"
+            role="alert"
+          >
+            Travel warning: {{ detail.destinationName }} is on the warning
+            travel zone
+          </div>
+          <div
+            v-if="detail.covidData.confirmed >= 7000000"
+            class="alert alert-danger"
+            role="alert"
+          >
+            Travel warning: {{ detail.destinationName }} is on the danger travel
+            zone
+          </div>
+        </div>
+      </li>
     </ul>
   </div>
 </template>
@@ -99,6 +185,13 @@ export default {
     this.getAdvice();
   },
   methods: {
+    formatNumber(value) {
+      let val = (value / 1).toFixed(2).replace(".", ",");
+      return val
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        .split(",")[0];
+    },
     getAdvice() {
       console.log(this.detail.destinationName.split(",")[0], "LOKASI");
       if (this.detail.temperature > -10 && this.detail.temperature < 10) {

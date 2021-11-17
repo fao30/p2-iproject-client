@@ -1,56 +1,69 @@
 <template>
-  <div @click.prevent="detail(desCard.id)">
-    <ul class="cards">
-      <li>
-        <a href="" class="card" style="width: 40%">
-          <img :src="desCard.imgUrl" class="card__image" alt="" />
-          <div class="card__overlay">
-            <div class="card__header">
-              <div class="card__header-text">
-                <h3 class="card__title">
-                  Destination:
-                  {{ desCard.destinationName }}
-                  <p
-                    v-if="desCard.availableSeat < 5"
-                    style="
-                      background-color: red;
-                      color: yellow;
-                      border-radius: 694px;
-                      font-size: 10px;
-                    "
-                  >
-                    HOT DESTINATION
+  <div class="">
+    <div v-for="desCard in getDestination" :key="desCard.id">
+      <div>
+        <div @click.prevent="detail(desCard.id)">
+          <ul class="cards">
+            <li>
+              <a href="" class="card" style="width: 40%">
+                <img :src="desCard.imgUrl" class="card__image" alt="" />
+                <div class="card__overlay">
+                  <div class="card__header">
+                    <div class="card__header-text">
+                      <h3 class="card__title">
+                        Destination:
+                        {{ desCard.destinationName }}
+                        <p
+                          v-if="desCard.availableSeat < 5"
+                          style="
+                            background-color: red;
+                            color: yellow;
+                            border-radius: 694px;
+                            font-size: 10px;
+                          "
+                        >
+                          HOT DESTINATION
+                        </p>
+                      </h3>
+                      <span class="card__status"
+                        >Price: {{ desCard.price }} USD</span
+                      >
+                    </div>
+                  </div>
+                  <p class="card__description">
+                    Current local temperature: {{ desCard.temperature }}
                   </p>
-                </h3>
-                <span class="card__status">Price: {{ desCard.price }} USD</span>
-              </div>
-            </div>
-            <p class="card__description">
-              Current local temperature: {{ desCard.temperature }}
-            </p>
-            <br />
-            <p class="card__description">
-              Available seats: {{ desCard.availableSeat }} left
-            </p>
-          </div>
-        </a>
-      </li>
-    </ul>
+                  <br />
+                  <p class="card__description">
+                    Available seats: {{ desCard.availableSeat }} left
+                  </p>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: "destinationCard",
-  props: ["desCard"],
+  // props: ["desCard"],
   methods: {
     async detail(payload) {
       await this.$store.dispatch("DETAILBYID", payload);
       await this.$router.push(`/detail/${payload}`);
     },
   },
+  computed: {
+    getDestination() {
+      return this.$store.state.destination;
+    },
+  },
   created() {
-    // console.log(this.desCard.response, "DI DESTINATION CARD 53");
+    this.$store.dispatch("FETCH_DESTINATION");
   },
 };
 </script>

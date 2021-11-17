@@ -2,12 +2,7 @@
   <div class="home">
     <navbarVue> </navbarVue>
     <!-- <div class="container1"> -->
-    <destinationCardVue
-      v-for="desCard in getDestination"
-      :key="desCard.id"
-      :desCard="desCard"
-    >
-    </destinationCardVue>
+    <destinationCardVue> </destinationCardVue>
     <!-- </div> -->
   </div>
 </template>
@@ -23,21 +18,22 @@ export default {
     navbarVue,
     destinationCardVue,
   },
-  computed: {
-    getDestination() {
-      return this.$store.state.destination;
-    },
-  },
-  created() {
-    this.$store.dispatch("FETCH_DESTINATION");
-  },
+  // computed: {
+  //   getDestination() {
+  //     return this.$store.state.destination;
+  //   },
+  // },
+  // created() {
+  //   this.$store.dispatch("FETCH_DESTINATION");
+  // },
 };
 </script>
 
 <style>
 .containerCard {
   display: flex;
-  flex-direction: row;
+  /* flex-direction: row; */
+  gap: 10px 20px;
   flex-wrap: wrap;
 }
 

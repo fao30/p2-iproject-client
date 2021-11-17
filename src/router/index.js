@@ -5,6 +5,7 @@ import Login from "../views/login.vue";
 import Detail from "../views/detail.vue";
 import Cart from "../views/cart.vue";
 import Payment from "../views/payment.vue";
+import Register from "../views/register.vue";
 
 Vue.use(VueRouter);
 
@@ -13,6 +14,15 @@ const routes = [
     path: "/",
     name: "Home",
     component: Home,
+  },
+  {
+    path: "/chat",
+    name: "Chat",
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/Chat.vue"),
   },
   {
     path: "/about",
@@ -42,6 +52,11 @@ const routes = [
     path: "/payment/:id",
     name: "payment",
     component: Payment,
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: Register,
   },
 ];
 

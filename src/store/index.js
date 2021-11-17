@@ -10,6 +10,7 @@ export default new Vuex.Store({
     detail: [],
     booktrip: [],
     islogin: false,
+    isRegister: false,
     dollarrupiah: [],
     transfer: [],
     paid: false,
@@ -43,6 +44,9 @@ export default new Vuex.Store({
     },
     PAYMENTID(state, payload) {
       state.paymentId = payload;
+    },
+    REGISTER(state, payload) {
+      state.isRegister = payload;
     },
   },
   actions: {
@@ -169,6 +173,19 @@ export default new Vuex.Store({
       }
     },
 
+    async REGISTER(context, payload) {
+      try {
+        console.log("REGISTER");
+        let response = await axios({
+          method: "post",
+          url: `/register`,
+          data: payload,
+        });
+        if (response.data.id) context.commit("REGISTER", true);
+      } catch (err) {
+        console.log(err);
+      }
+    },
     async LOGIN(context, payload) {
       try {
         console.log("LOGIN");

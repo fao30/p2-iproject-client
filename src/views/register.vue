@@ -3,13 +3,6 @@
     <navbarVue> </navbarVue>
     <section id="login-page">
       <div class="login-container row m-0 h-100">
-        <div class="col-6 p-0 login-second-bg">
-          <img
-            class="w-100"
-            src="../assets/img/login-second-bg.jpg"
-            alt="second background"
-          />
-        </div>
         <div
           class="
             col-6
@@ -23,11 +16,15 @@
         >
           <form class="p-5 card rounded shadow">
             <div class="d-flex flex-column align-items-center">
-              <h2 class="text-center">Fao Tour And Travel</h2>
-              <img
-                src="../assets/img/icon.png"
-                alt="login thumbnail"
-                class="w-50 my-4"
+              <h2 class="text-center">Kindly register before</h2>
+            </div>
+            <div class="w-100 form-group">
+              <label for="email">Name</label>
+              <input
+                v-model="inputName"
+                type="email"
+                name="email"
+                class="form-control"
               />
             </div>
             <div class="w-100 form-group">
@@ -48,29 +45,41 @@
                 class="form-control"
               />
             </div>
+            <div class="w-100 form-group">
+              <label for="email">Alamat</label>
+              <input
+                v-model="inputAlamat"
+                type="email"
+                name="email"
+                class="form-control"
+              />
+            </div>
+            <div class="w-100 form-group">
+              <label for="email">Telephone</label>
+              <input
+                v-model="inputTelephone"
+                type="email"
+                name="email"
+                class="form-control"
+              />
+            </div>
             <div class="w-100 mt-2">
               <button
-                @click.prevent="login"
+                @click.prevent="register"
                 type="submit"
                 class="btn btn-login shadow rounded btn-block"
               >
-                Login
+                Register
               </button>
             </div>
-            <p>--- or register here---</p>
-            <center>
-              <div class="w-100 mt-2">
-                <button
-                  @click="register"
-                  style="width: 120px"
-                  type="submit"
-                  class="btn btn-login shadow rounded btn-block"
-                >
-                  Register
-                </button>
-              </div>
-            </center>
           </form>
+        </div>
+        <div class="col-6 p-0 login-second-bg">
+          <img
+            class="w-100"
+            src="../assets/img/login-second-bg.jpg"
+            alt="second background"
+          />
         </div>
       </div>
     </section>
@@ -80,11 +89,14 @@
 <script>
 import navbarVue from "../components/navbar.vue";
 export default {
-  name: "Login",
+  name: "Register",
   data() {
     return {
+      inputName: [],
       inputEmail: [],
+      inputAlamat: [],
       inputPassword: [],
+      inputTelephone: [],
     };
   },
   components: {
@@ -94,22 +106,23 @@ export default {
     userIsLogin() {
       return this.$store.state.isLogin;
     },
+    userIsRegister() {
+      return this.$store.state.isRegister;
+    },
   },
   methods: {
-    register() {
-      // console.log("REGISTER");
-      this.$router.push("/register");
-    },
-    async login() {
+    async register() {
       let obj = {
+        name: this.inputName,
         email: this.inputEmail,
         password: this.inputPassword,
+        alamat: this.inputAlamat,
+        telephone: this.inputTelephone,
       };
-      await this.$store.dispatch("LOGIN", obj);
-      if (this.userIsLogin) {
-        console.log("KELOGINNNN");
+      await this.$store.dispatch("REGISTER", obj);
+      if (this.userIsRegister) {
+        this.$router.push("/login");
       }
-      this.$router.push("/");
     },
   },
 };
