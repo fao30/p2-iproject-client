@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import Login from "../views/login.vue";
 import Detail from "../views/detail.vue";
 import Cart from "../views/cart.vue";
+import Payment from "../views/payment.vue";
 
 Vue.use(VueRouter);
 
@@ -36,6 +37,11 @@ const routes = [
     path: "/cart",
     name: "Cart",
     component: Cart,
+  },
+  {
+    path: "/payment/:id",
+    name: "payment",
+    component: Payment,
   },
 ];
 

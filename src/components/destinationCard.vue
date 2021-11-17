@@ -50,7 +50,7 @@ export default {
     },
   },
   created() {
-    console.log(this.desCard.response, "DI DESTINATION CARD 53");
+    // console.log(this.desCard.response, "DI DESTINATION CARD 53");
   },
 };
 </script>

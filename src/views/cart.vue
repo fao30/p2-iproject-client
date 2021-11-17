@@ -2,7 +2,7 @@
   <div>
     <navbarVue> </navbarVue>
     <div v-for="desCard in getBookingById" :key="desCard.id">
-      <div @click.prevent="detail(desCard.id)">
+      <div>
         <ul class="cards">
           <li>
             <a href="" class="card" style="width: 40%">
@@ -46,9 +46,19 @@
                       )
                     }}
                   </p>
-                  <div class="containerDetail1">
+                  <div
+                    class="containerDetail1"
+                    v-if="desCard.status !== 'COMPLETED'"
+                  >
                     <button
-                      @click.prevent="purchaseBook"
+                      @click.prevent="
+                        purchaseBook(
+                          desCard.id,
+                          desCard.TourPackage.price *
+                            desCard.pax *
+                            getCurrency.data
+                        )
+                      "
                       type="button"
                       class="btn btn-outline-success"
                     >
@@ -64,6 +74,13 @@
                     >
                       Delete
                     </button>
+                  </div>
+                  <div
+                    class="alert alert-warning"
+                    role="alert"
+                    v-if="desCard.status == 'COMPLETED'"
+                  >
+                    The booking has been paid,Bon voyage!
                   </div>
                   <br />
                 </div>
@@ -90,16 +107,25 @@ export default {
     getCurrency() {
       return this.$store.state.dollarrupiah;
     },
+    getPayment() {
+      return this.$store.state.purchase;
+    },
+    getPaymentID() {
+      return this.$store.state.paymentId;
+    },
   },
   created() {
     if (localStorage.access_token) {
       this.$store.dispatch("DATABYID", localStorage.access_token);
       this.$store.dispatch("GETCURRENCY");
     }
-    console.log(this.getCurrency.data, "INI TUKAT");
-    // console.log(this.getBookingById, "INI DATA");
+    this.getPaymentId();
   },
   methods: {
+    getPaymentId() {
+      console.log("DI METHODS PAYMENT ID");
+      console.log(this.getPaymentID);
+    },
     formatPrice(value) {
       let val = (value / 1).toFixed(2).replace(".", ",");
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -112,6 +138,21 @@ export default {
       await this.$store.dispatch("DELETECART", payload);
       await this.$store.dispatch("ADDSEAT", obj);
       this.$router.push("/");
+    },
+    async purchaseBook(bookId, cost) {
+      let obj = {
+        bookid: bookId,
+        amount: cost,
+      };
+      await this.$store.dispatch("PURCHASEACTION", obj);
+      let obj1 = {
+        id: this.getPayment.idXendit,
+      };
+      await this.$store.dispatch("TRANSFERDETAIL", obj1);
+      if (this.getPayment.id != 0) {
+        // console.log(this.getPayment, "INI PURCHASE");
+        await this.$router.push(`/payment/${obj1.id}`);
+      }
     },
   },
 };

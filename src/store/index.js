@@ -11,6 +11,10 @@ export default new Vuex.Store({
     booktrip: [],
     islogin: false,
     dollarrupiah: [],
+    transfer: [],
+    paid: false,
+    purchase: 0,
+    paymentId: [],
   },
   mutations: {
     FETCHDESTINATION(state, payload) {
@@ -28,16 +32,90 @@ export default new Vuex.Store({
     CURRENCY(state, payload) {
       state.dollarrupiah = payload;
     },
+    PURCHASEMUT(state, payload) {
+      state.purchase = payload;
+    },
+    TRANSFERMUT(state, payload) {
+      state.transfer = payload;
+    },
+    PAIDMUT(state, payload) {
+      state.paid = payload;
+    },
+    PAYMENTID(state, payload) {
+      state.paymentId = payload;
+    },
   },
   actions: {
+    async PAYMENTIDACTION(context) {
+      try {
+        console.log("MASUK PERTAMA KE PID");
+        let response = await axios({
+          method: "post",
+          url: `/callback`,
+        });
+        console.log(response.data, "INI DAPETIN CALLBACK, di SINIII");
+        context.commit("PAYMENTID", response);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async PAIDACTION(context, payload) {
+      try {
+        let response = await axios({
+          method: "post",
+          url: `/checkpayment`,
+          headers: {
+            access_token: localStorage.access_token,
+          },
+          params: {
+            external_id: payload.external_id,
+            amount: payload.amount,
+          },
+        });
+        console.log(response.data, "INI RESPONS TRANSFER INDEX TROUTER");
+        context.commit("PAIDMUT", response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async TRANSFERDETAIL(context, payload) {
+      try {
+        // console.log("PASTI MASUK", payload);
+        let response = await axios({
+          method: "get",
+          url: `/getva/${payload.id}`,
+          headers: {
+            access_token: localStorage.access_token,
+          },
+        });
+        // console.log(response.data, "INI RESPONS TRANSFER INDEX TROUTER");
+        context.commit("TRANSFERMUT", response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async PURCHASEACTION(context, payload) {
+      try {
+        let response = await axios({
+          method: "post",
+          url: "/createva",
+          headers: {
+            access_token: localStorage.access_token,
+          },
+          data: payload,
+        });
+        console.log(response.data[1][0], "INI RESPONS PURCHASE");
+        context.commit("PURCHASEMUT", response.data[1][0]);
+      } catch (err) {
+        console.log(err);
+      }
+    },
     async GETCURRENCY(context) {
       try {
-        console.log("JALAANn KURENSI");
         let response = await axios({
           method: "get",
           url: "/currency",
         });
-        console.log("CHECKPOINT");
         context.commit("CURRENCY", response);
       } catch (err) {
         console.log(err);
